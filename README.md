@@ -7,7 +7,11 @@
 Workload processing moved onto Kubernetes, with KEDA scaling the consumers on
 RabbitMQ queue depth and the Cluster Autoscaler adding nodes behind them.
 Capacity now follows the queue: **6 → 48 pods** at peak across **8 nodes**,
-absorbing bursts of **10K–40K messages** without anyone intervening.
+absorbing bursts of **10K–40K messages** without anyone intervening. The
+queue depth comes from a small **queue-length API** I wrote on the platform's
+gateway, so the same scaler works on EKS, on AKS and on-prem without exposing
+the broker; KEDA polls it every **15 s**, scales up fast (6 pods per 15 s)
+and down slowly (8 pods per minute behind a 30-minute stabilisation window).
 
 ## The problem
 
